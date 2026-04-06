@@ -99,6 +99,21 @@ Good choices for context keys:
 
 If no context key is provided, the proxy derives one from the first two messages automatically.
 
+## Demo
+
+A full working chat app is available in [`demo/nextjs/`](./demo/nextjs) — a Next.js app with streaming Gemini 2.5 Flash responses and a shadcn/ui chat interface.
+
+```bash
+cd demo/nextjs
+cp .env.local.example .env.local   # add your API key
+npm install
+npm run dev
+```
+
+## API Access
+
+To get an API key, contact [help@wordbricks.ai](mailto:help@wordbricks.ai).
+
 ## License
 
 MIT
