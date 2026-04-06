@@ -1,19 +1,24 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Send } from "lucide-react";
+import { ArrowUp, Bot, Sparkles } from "lucide-react";
 
 export default function Chat() {
   const { messages, sendMessage, status } = useChat();
   const [input, setInput] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const isLoading = status === "streaming" || status === "submitted";
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -23,68 +28,109 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-col h-screen max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center mb-4">
-        AI Proxy Chat Demo
-      </h1>
+    <div className="flex flex-col h-screen bg-background">
+      {/* Header */}
+      <header className="flex items-center justify-center gap-2 border-b px-4 py-3 shrink-0">
+        <Sparkles className="size-4 text-primary" />
+        <h1 className="text-sm font-medium">
+          AI Proxy Demo{" "}
+          <span className="text-muted-foreground font-normal">
+            &mdash; Gemini 2.5 Flash
+          </span>
+        </h1>
+      </header>
 
-      <Card className="flex-1 flex flex-col overflow-hidden">
-        <ScrollArea className="flex-1 p-4">
-          {messages.length === 0 && (
-            <p className="text-center text-muted-foreground mt-8">
-              Send a message to start chatting with Gemini 2.5 Flash.
-            </p>
-          )}
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex gap-3 ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                {message.role === "assistant" && (
-                  <Avatar className="h-8 w-8 shrink-0">
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                      AI
+      {/* Messages */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto">
+        {messages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full gap-4 px-4">
+            <div className="flex items-center justify-center size-12 rounded-2xl bg-primary/10">
+              <Bot className="size-6 text-primary" />
+            </div>
+            <div className="text-center space-y-1">
+              <p className="text-sm font-medium">Ask me anything</p>
+              <p className="text-xs text-muted-foreground">
+                Powered by Gemini 2.5 Flash
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+            {messages.map((message) =>
+              message.role === "user" ? (
+                <div key={message.id} className="flex justify-end gap-3">
+                  <div className="rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-primary-foreground text-sm max-w-[80%] whitespace-pre-wrap leading-relaxed">
+                    {message.parts
+                      .filter((part) => part.type === "text")
+                      .map((part, i) => (
+                        <span key={i}>{part.text}</span>
+                      ))}
+                  </div>
+                </div>
+              ) : (
+                <div key={message.id} className="flex gap-3">
+                  <Avatar className="size-7 shrink-0 mt-0.5">
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                      <Sparkles className="size-3.5" />
                     </AvatarFallback>
                   </Avatar>
-                )}
-                <div
-                  className={`rounded-lg px-4 py-2 max-w-[80%] whitespace-pre-wrap ${
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
-                  }`}
-                >
-                  {message.parts
-                    .filter((part) => part.type === "text")
-                    .map((part, i) => (
-                      <span key={i}>{part.text}</span>
-                    ))}
+                  <div className="rounded-2xl rounded-tl-md bg-muted px-4 py-2.5 text-sm max-w-[80%] whitespace-pre-wrap leading-relaxed">
+                    {message.parts
+                      .filter((part) => part.type === "text")
+                      .map((part, i) => (
+                        <span key={i}>{part.text}</span>
+                      ))}
+                  </div>
                 </div>
-                {message.role === "user" && (
-                  <Avatar className="h-8 w-8 shrink-0">
-                    <AvatarFallback className="text-xs">You</AvatarFallback>
+              ),
+            )}
+            {isLoading &&
+              messages[messages.length - 1]?.role !== "assistant" && (
+                <div className="flex gap-3">
+                  <Avatar className="size-7 shrink-0 mt-0.5">
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                      <Sparkles className="size-3.5" />
+                    </AvatarFallback>
                   </Avatar>
-                )}
-              </div>
-            ))}
+                  <div className="rounded-2xl rounded-tl-md bg-muted px-4 py-3">
+                    <div className="flex gap-1">
+                      <span className="size-1.5 rounded-full bg-muted-foreground/40 animate-bounce [animation-delay:0ms]" />
+                      <span className="size-1.5 rounded-full bg-muted-foreground/40 animate-bounce [animation-delay:150ms]" />
+                      <span className="size-1.5 rounded-full bg-muted-foreground/40 animate-bounce [animation-delay:300ms]" />
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
-        </ScrollArea>
+        )}
+      </div>
 
-        <form onSubmit={onSubmit} className="flex gap-2 p-4 border-t">
+      {/* Input */}
+      <div className="shrink-0 border-t bg-background">
+        <form
+          onSubmit={onSubmit}
+          className="max-w-2xl mx-auto flex items-center gap-2 px-4 py-3"
+        >
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type a message..."
             disabled={isLoading}
+            className="flex-1 h-10 rounded-xl px-4 text-sm"
           />
-          <Button type="submit" size="icon" disabled={isLoading || !input}>
-            <Send className="h-4 w-4" />
+          <Button
+            type="submit"
+            size="icon"
+            disabled={isLoading || !input.trim()}
+            className="size-10 rounded-xl shrink-0"
+          >
+            <ArrowUp className="size-4" />
           </Button>
         </form>
-      </Card>
+        <p className="text-center text-[10px] text-muted-foreground pb-2">
+          Powered by @ai-proxy/google
+        </p>
+      </div>
     </div>
   );
 }
