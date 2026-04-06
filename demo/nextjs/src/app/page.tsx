@@ -128,7 +128,7 @@ export default function Chat() {
           </Button>
         </form>
         <p className="text-center text-[10px] text-muted-foreground pb-2">
-          Powered by @ai-proxy/google
+          Powered by @typochat-sdk/google
         </p>
       </div>
     </div>

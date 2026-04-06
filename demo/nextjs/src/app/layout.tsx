@@ -32,7 +32,7 @@ const notoSansSC = Noto_Sans_SC({
 
 export const metadata: Metadata = {
   title: "AI Proxy Chat Demo",
-  description: "Chat demo using @ai-proxy/google with Gemini 2.5 Flash",
+  description: "Chat demo using @typochat-sdk/google with Gemini 2.5 Flash",
 };
 
 export default function RootLayout({

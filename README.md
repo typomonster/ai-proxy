@@ -1,4 +1,4 @@
-# ai-proxy
+# typochat-sdk
 
 Drop-in SDK replacements for [Vercel AI SDK](https://sdk.vercel.ai/) that route requests through the TypoMonster Chat proxy. Swap one import, add your API key, and get unified token tracking, automatic prefix caching, and rate limiting.
 
@@ -6,24 +6,23 @@ Drop-in SDK replacements for [Vercel AI SDK](https://sdk.vercel.ai/) that route 
 
 | Package | Description |
 |---------|-------------|
-| `@ai-proxy/core` | Base proxy fetch wrapper — works with any `@ai-sdk/*` provider |
-| `@ai-proxy/google` | Drop-in replacement for `@ai-sdk/google` |
+| `@typochat-sdk/core` | Base proxy fetch wrapper — works with any `@ai-sdk/*` provider |
+| `@typochat-sdk/google` | Drop-in replacement for `@ai-sdk/google` |
 
 ## Install
 
 ```bash
-npm install https://github.com/typomonster/ai-proxy/releases/download/v0.1.0/ai-proxy-core-0.1.0.tgz
-npm install https://github.com/typomonster/ai-proxy/releases/download/v0.1.0/ai-proxy-google-0.1.0.tgz
+npm install @typochat-sdk/core @typochat-sdk/google
 ```
 
 ## Quick Start
 
-### `@ai-proxy/google` (Recommended)
+### `@typochat-sdk/google` (Recommended)
 
 The simplest integration — one import change from `@ai-sdk/google`:
 
 ```typescript
-import { createProxyGoogle } from "@ai-proxy/google";
+import { createProxyGoogle } from "@typochat-sdk/google";
 import { generateText } from "ai";
 
 const google = createProxyGoogle({
@@ -43,7 +42,7 @@ console.log(text);
 
 ```diff
 - import { createGoogleGenerativeAI } from "@ai-sdk/google";
-+ import { createProxyGoogle } from "@ai-proxy/google";
++ import { createProxyGoogle } from "@typochat-sdk/google";
   import { generateText } from "ai";
 
 - const google = createGoogleGenerativeAI({
@@ -60,12 +59,12 @@ console.log(text);
   });
 ```
 
-### `@ai-proxy/core` (Any Provider)
+### `@typochat-sdk/core` (Any Provider)
 
 Use `createProxyFetch` with any Vercel AI SDK provider:
 
 ```typescript
-import { createProxyFetch } from "@ai-proxy/core";
+import { createProxyFetch } from "@typochat-sdk/core";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
 

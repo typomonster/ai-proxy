@@ -1,4 +1,4 @@
-import { createProxyGoogle } from "@ai-proxy/google";
+import { createProxyGoogle } from "@typochat-sdk/google";
 import { streamText, convertToModelMessages } from "ai";
 
 const google = createProxyGoogle({
